@@ -1,7 +1,10 @@
 import cv2
 import pytesseract
+
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
-#print(pytesseract.image_to_string(r'D:\examplepdf2image.png'))
+
+
+# print(pytesseract.image_to_string(r'D:\examplepdf2image.png'))
 
 def image_cc(foto):
     img = cv2.imread(foto)
@@ -13,9 +16,7 @@ def image_cc(foto):
             str += let
         except:
             continue
-    return(int(str))
-
-
+    return (int(str))
 #
 # img = cv2.imread("vale.jpeg")
 # text = pytesseract.image_to_string(img)
