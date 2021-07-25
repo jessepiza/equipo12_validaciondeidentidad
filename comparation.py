@@ -1,47 +1,42 @@
 import torch
 from facenet_pytorch import MTCNN
-import numpy as np
 from facenet_pytorch import InceptionResnetV1
 from scipy.spatial.distance import euclidean
-import cv2
 from PIL import Image
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-#Función que reconoce las caras
+# Función que reconoce las caras
 facial = MTCNN(
-            keep_all      = True,
-            min_face_size = 20,
-            thresholds    = [0.6, 0.7, 0.7],
-            post_process  = False,
-            image_size    = 160,
-            device        = device
-        )
+    keep_all=True,
+    min_face_size=20,
+    thresholds=[0.6, 0.7, 0.7],
+    post_process=False,
+    image_size=160,
+    device=device
+)
+
 
 def comparation(user_pic, user_id):
-    #Función que compara la imagen de la cédula con la foto actual de la persona
-    #Retorna un booleano, verdadero si son la misma persona, falso si no
+    # Función que compara la imagen de la cédula con la foto actual de la persona
+    # Retorna un booleano, verdadero si son la misma persona, falso si no
 
-    #Reconocimiento de las caras
+    # Reconocimiento de las caras
     user_pic = facial.forward(user_pic)
     user_id = facial.forward(user_id)
 
-    #Modelo para pasar la información de las caras a valores numéricos (embedding)
+    # Modelo para pasar la información de las caras a valores numéricos (embedding)
     encoder = InceptionResnetV1(pretrained='vggface2', classify=False, device=device).eval()
 
     user_pic_num = encoder.forward(user_pic).detach().cpu()
     user_id_num = encoder.forward(user_id).detach().cpu()
 
-    #Distancia euclídea entre los embeddings de las caras
+    # Distancia euclídea entre los embeddings de las caras
     euclidean_dist = euclidean(user_pic_num, user_id_num)
+    print(euclidean_dist)
 
-    #Revisando si se paracen lo suficiente o no
-    if euclidean_dist > 0.4:
+    # Revisando si se paracen lo suficiente o no
+    if euclidean_dist > 0.5:
         return False
     else:
         return True
-
-cedula_vale = Image.open('imagenes/cedula2.jpeg')
-captura_vale = Image.open('imagenes/captura.png')
-
-print(comparation(cedula_vale,captura_vale))

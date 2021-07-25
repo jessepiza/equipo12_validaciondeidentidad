@@ -1,4 +1,15 @@
+certifi==2021.5.30
+charset-normalizer==2.0.3
+facenet-pytorch==2.5.2
+idna==3.2
 numpy==1.21.1
 opencv-contrib-python==4.5.3.56
 opencv-python==4.5.3.56
 Pillow==8.3.1
+pytesseract==0.3.8
+requests==2.26.0
+scipy==1.7.0
+torch==1.9.0
+torchvision==0.10.0
+typing-extensions==3.10.0.0
+urllib3==1.26.6

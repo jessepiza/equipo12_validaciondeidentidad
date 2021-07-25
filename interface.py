@@ -1,68 +1,93 @@
 from tkinter import *
+from tkinter import messagebox
+
+import cv2
 from PIL import Image
 from tkinter.filedialog import askopenfile
-import os
+from check_id_numbers import check_id_numbers
+from take_pic_of_user import take_pic_of_user
+from face_detected import face_detected
+from comparation import comparation
 
 width = 1024
-height = 1024
+height = 650
 dir_id = 'images_id'
 dir_cam = 'images_cam'
-root = Frame(height=height, width=width, background="white")
-root.pack(padx=0, pady=0)
+font = "Playfair Display"
+root = Tk()
+root.resizable(0, 0)
+# root = Frame(height=height, width=width, background="white")
+
+# root.pack(padx=0, pady=0)
+canvas = Canvas(root, width=width, height=height)
 
 
-def Grafica():
-    context = "Para validar su identidad siga los siguientes pasos:"
-    etiqueta = Label(text=context, font=("Verdana", 20), background="white").place(x=45, y=45)
-    first = """1.   Confirme el número de su identificación.
-    Recuerde no usar puntos ni espacios."""
-    etiqueta_1 = Label(text=first, font=("Verdana", 18), background="white").place(x=45, y=150)
-    id = "Ingrese su número de cédula aquí: "
-    etiqueta_id = Label(text=id, font=("Verdana", 15), background="white").place(x=85, y=250)
-    campo = Entry(root)
-    campo.insert(0, "")
-    campo.place(x=85, y=300)
-    button = Button(root, text="Aceptar", command=lambda: cedula(campo.get()), font=("Verdana", 15),
-                    background="white").place(x=250, y=300)
+def window():
+    clear()
+    colorbk = '#CBCBD5'
+    colorrect = '#02017F'
+    canvas.create_rectangle(0, 0, width, height / 8, fill=colorrect)
+    canvas.configure(background=colorbk)
+    canvas.pack()
+    # canvas.create_image(100, 100, image=logo, anchor=NW)
+    context = "For validation purposes, please follow the next steps:"
+    canvas.create_text(width / 16, 5 * height / 32, anchor=NW, text=context, font=(font, 20))
+    first = "1.    Confirm your ID number. Remember not to use spaces nor dots."
+    canvas.create_text(width / 16, height / 4, anchor=NW, text=first, font=(font, 18))
+    id = "   Enter your ID number here: "
+    canvas.create_text(3 * width / 32, 5 * height / 16, anchor=NW, text=id, font=(font, 15))
+    field = Entry(canvas)
+    canvas.create_window(width / 2, 41 * height / 128, anchor=N, window=field, width=width / 4)
+    accept_button = Button(root, text="Accept", command=lambda: loading_process(field.get()), font=(font, 10),
+                           background="white")
+    canvas.create_window(11 * width / 16, 5 * height / 16, anchor=N, window=accept_button)
 
 
-def limpiar():
-    root.destroy()
+def loading_process(entry):
+    second = '2.    Enter a clear image of your ID. Make sure your face and number ID are showing.'
+    canvas.create_text(width / 16, 6 * height / 16, anchor=NW, text=second, font=(font, 18))
+    upload_button = Button(root, text='Choose File', command=lambda: load_file(entry), font=(font, 15),
+                           background="white")
+    canvas.create_window(7 * width / 64, 7 * height / 16, anchor=NW, window=upload_button)
 
 
-def open_file():
-    file_path = askopenfile(mode='r', filetypes=[('Image Files', '*jpeg', '*jpg')])
+def clear():
+    canvas.delete("all")
+
+
+def load_file(entry):
+    file_path = askopenfile(mode='r', filetypes=[('Image Files', ".jpeg .jpg .png .bmp")])
     im = Image.open(file_path.name)
-    name_file = os.path.basename(os.path.normpath(file_path.name))
+    name_file = 'user_id.png'
     im.save(dir_id + '/' + name_file)
-    Label(root, text="Archivo subido", font=("Verdana", 20), background="white", foreground="green").place(x=300, y=600)
     if file_path is not None:
         pass
+    img_id = dir_id + '/' + name_file
+    num_id = entry
+    check_id, text = check_id_numbers(int(num_id), img_id)
+    if check_id:
+        canvas.create_text(17 * width / 64, 7.2 * height / 16, anchor=NW, text="File uploaded successfully",
+                           font=(font, 18), fill="green")
+        third = '3.    For facial recognition purposes, please allow us access to your camera.'
+        canvas.create_text(width / 16, 8.2 * height / 16, anchor=NW, text=third, font=(font, 18))
+        accept_button = Button(root, text='Accept', command=lambda: validation_window(), font=(font, 15),
+                               background="white")
+        canvas.create_window(7 * width / 64, 9 * height / 16, anchor=NW, window=accept_button)
+    else:
+        messagebox.showerror("Error", text)
 
 
-# def uploadFiles():
-#     pb1 = Progressbar(root, orient=HORIZONTAL, length=300, mode='determinate')
-#     pb1.grid(row=4, columnspan=3, pady=20)
-#     for i in range(5):
-#         root.update_idletasks()
-#         pb1['value'] += 20
-#         time.sleep(1)
-#     pb1.destroy()
-#     Label(text='File Uploaded Successfully!', font=("Verdana", 18), foreground='green').place(x=55, y=500)
+def validation_window():
+    take_pic_of_user(dir_cam)
+    images_id_list = face_detected(dir_id)
+    images_cam_list = face_detected(dir_cam)
+    for image in images_cam_list:
+        user_pic = Image.open(image)
+        user_id = Image.open(images_id_list[0])
+        print(comparation(user_pic, user_id))
 
 
-def cedula(entry):
-    id = int(entry)
-    print(id)
-    secd = """2.   Ingrese una foto de su cédula en donde se vea claro
-    su foto y el número de identificación."""
-    etiqueta_1 = Label(text=secd, font=("Verdana", 18), background="white").place(x=45, y=400)
-    # warn= "Ingrese el número de su cédula"
-    # label = Label(text=warn, font= ("Verdana",12),background="white").place(x=350, y=300)
-    lab = Label(text='Suba el documento', font=("Verdana", 18), background="white").place(x=45, y=550)
-    button3 = Button(root, text='Choose File', command=lambda: open_file(), font=("Verdana", 15),
-                     background="white").place(x=80, y=600)
 
 
-Grafica()
+window()
 root.mainloop()
