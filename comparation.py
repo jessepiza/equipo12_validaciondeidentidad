@@ -2,7 +2,6 @@ import torch
 from facenet_pytorch import MTCNN
 from facenet_pytorch import InceptionResnetV1
 from scipy.spatial.distance import euclidean
-from PIL import Image
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -34,9 +33,8 @@ def comparation(user_pic, user_id):
     # Distancia euclídea entre los embeddings de las caras
     euclidean_dist = euclidean(user_pic_num, user_id_num)
     print(euclidean_dist)
-
     # Revisando si se paracen lo suficiente o no
-    if euclidean_dist > 0.5:
-        return False
+    if euclidean_dist > 0.7:
+        return False, euclidean_dist
     else:
-        return True
+        return True, euclidean_dist

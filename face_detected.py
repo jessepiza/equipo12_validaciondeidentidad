@@ -4,6 +4,7 @@ import os
 
 
 def face_detected(directory):
+    #
     face_list = []
     for name_dir, dirs, files in os.walk(directory):
         for file in files:
@@ -36,9 +37,3 @@ def face_detected(directory):
             cv2.waitKey(0)
             face_list.append(name_dir + '/' + name_file + '.png')
     return face_list
-
-
-dir_id = 'images_id'
-dir_cam = 'images_cam'
-
-print(face_detected(dir_id))

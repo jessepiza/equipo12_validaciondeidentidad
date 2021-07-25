@@ -1,10 +1,11 @@
 import pytesseract
+from PIL import Image
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
 
 
 def check_id_numbers(num_id, img_id):
-    text_from_id = pytesseract.image_to_string(img_id)
+    text_from_id = pytesseract.image_to_string(Image.open(img_id))
     str = ""
     for x in text_from_id:
         try:
@@ -18,7 +19,6 @@ def check_id_numbers(num_id, img_id):
         return False, text
 
     num_img_id = int(str)
-    print(num_img_id)
 
     if num_img_id != num_id:
         text = "Numbers don't match, please enter another image."
