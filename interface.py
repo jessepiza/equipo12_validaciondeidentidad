@@ -14,9 +14,6 @@ dir_cam = 'images_cam'
 font = "Playfair Display"
 root = Tk()
 root.resizable(0, 0)
-# root = Frame(height=height, width=width, background="white")
-
-# root.pack(padx=0, pady=0)
 canvas = Canvas(root, width=width, height=height)
 count_fail_id = 0
 count_fail_cap = 0
@@ -31,8 +28,6 @@ def window():
     canvas.create_rectangle(0, 0, width, height / 8, fill=colorrect)
     canvas.configure(background=colorbk)
     canvas.pack(fill="both", expand=True)
-
-    #panel.pack(side="bottom", fill="both", expand="yes")
     context = "For validation purposes, please follow the next steps:"
     canvas.create_text(width / 16, 5 * height / 32, anchor=NW, text=context, font=(font, 20))
     first = "1.    Confirm your ID number. Remember not to use spaces nor dots."
@@ -93,7 +88,6 @@ def load_file(field, accept_butt, upload_button):
 
 def validation_window(accept_button):
     global count_fail_cap
-    print(count_fail_cap)
     take_pic_of_user(dir_cam)
     images_id_list = face_detected(dir_id)
     images_cam_list = face_detected(dir_cam)
