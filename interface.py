@@ -28,6 +28,8 @@ def window():
     canvas.create_rectangle(0, 0, width, height / 8, fill=colorrect)
     canvas.configure(background=colorbk)
     canvas.pack(fill="both", expand=True)
+    face_shot = 'FaceShot'
+    canvas.create_text(width/16, height/32, anchor=NW, text=face_shot, font=(font,30, 'bold'), fill='white')
     context = "For validation purposes, please follow the next steps:"
     canvas.create_text(width / 16, 5 * height / 32, anchor=NW, text=context, font=(font, 20))
     first = "1.    Confirm your ID number. Remember not to use spaces nor dots."

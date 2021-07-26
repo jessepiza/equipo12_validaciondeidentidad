@@ -1,8 +1,8 @@
-# Project Title
+# FaceShot
 
 Due to the outrageous increase in cyber crimes, the need for new security protocols has arisen. 
 
-As a solution, we developed **nombre** where facial recognition technology meets an affordable requirements
+As a solution, we developed **FaceShot** where facial recognition technology meets an affordable requirements
 to accomplish successful business transactions.
 
 
