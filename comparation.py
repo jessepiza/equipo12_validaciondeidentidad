@@ -34,7 +34,7 @@ def comparation(user_pic, user_id):
     euclidean_dist = euclidean(user_pic_num, user_id_num)
     print(euclidean_dist)
     # Revisando si se paracen lo suficiente o no
-    if euclidean_dist > 0.7:
+    if euclidean_dist > 0.3:
         return False, euclidean_dist
     else:
         return True, euclidean_dist
