@@ -5,7 +5,7 @@ from scipy.spatial.distance import euclidean
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-# Función que reconoce las caras
+# Function that recognizes faces
 facial = MTCNN(
     keep_all=True,
     min_face_size=20,
@@ -17,23 +17,23 @@ facial = MTCNN(
 
 
 def comparation(user_pic, user_id):
-    # Función que compara la imagen de la cédula con la foto actual de la persona
-    # Retorna un booleano, verdadero si son la misma persona, falso si no
+    # Function that compares the ID image with the capture
+    # Returns True if they correspond to the same person, False if they do not correspond
 
-    # Reconocimiento de las caras
+    # Face recognition
     user_pic = facial.forward(user_pic)
     user_id = facial.forward(user_id)
 
-    # Modelo para pasar la información de las caras a valores numéricos (embedding)
+    # Model for converting images into numerical values (embedding)
     encoder = InceptionResnetV1(pretrained='vggface2', classify=False, device=device).eval()
 
     user_pic_num = encoder.forward(user_pic).detach().cpu()
     user_id_num = encoder.forward(user_id).detach().cpu()
 
-    # Distancia euclídea entre los embeddings de las caras
+    # Euclidean distance between the face embeddings
     euclidean_dist = euclidean(user_pic_num, user_id_num)
     print(euclidean_dist)
-    # Revisando si se paracen lo suficiente o no
+    # Checking if they are likely enough 
     if euclidean_dist > 0.3:
         return False, euclidean_dist
     else:
